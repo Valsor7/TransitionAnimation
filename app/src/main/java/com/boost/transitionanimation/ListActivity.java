@@ -77,7 +77,6 @@ public class ListActivity extends AppCompatActivity {
             initCall(cat - 1);
             cat--;
         }
-        mProfilesAdapter.notifyDataSetChanged();
     }
 
     private void initCall(final int cat) {
@@ -89,6 +88,9 @@ public class ListActivity extends AppCompatActivity {
                 if (response.body() != null)
                     Log.d(TAG, "onResponse: " + response.body());
                     mProfiles.get(cat).setAvatarUrl(response.body().getFile());
+                if(cat == 1){
+                    mProfilesAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override

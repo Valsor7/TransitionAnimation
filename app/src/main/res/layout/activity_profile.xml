@@ -1,20 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/ll_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/action_container"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/colorAccent"
+        android:visibility="invisible" />
+
     <ImageView
         android:id="@+id/iv_avatar"
-        android:transitionName="@string/shared_image_tag"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
-        tools:srcCompat="@drawable/ic_account"
-        />
+        android:layout_marginTop="50dp"
+        android:transitionName="@string/shared_image_tag"
+        tools:src="@drawable/ic_account" />
 
+    <FrameLayout
+        android:id="@+id/container_biography"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/action_container"
+        android:background="@color/colorPrimary">
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflkldfkslsdkflskdflksdflk"/>
+
+    </FrameLayout>
+
+</RelativeLayout>
