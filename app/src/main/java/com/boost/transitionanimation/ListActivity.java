@@ -74,7 +74,7 @@ public class ListActivity extends AppCompatActivity {
             Profile profile = new Profile();
             profile.setFullName("My cat " + cat);
             mProfiles.add(profile);
-            initCall(cat - 1);
+//            initCall(cat - 1);
             cat--;
         }
     }

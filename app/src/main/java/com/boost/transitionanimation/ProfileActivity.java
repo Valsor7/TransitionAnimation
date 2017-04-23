@@ -2,12 +2,17 @@ package com.boost.transitionanimation;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.transition.AutoTransition;
+import android.transition.ChangeBounds;
+import android.transition.Fade;
 import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.TransitionManager;
+import android.transition.Visibility;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -16,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -40,27 +46,35 @@ public class ProfileActivity extends AppCompatActivity  {
     @BindView(R.id.container_biography)
     ViewGroup mBioContainer;
 
+    @BindView(R.id.tv_bio)
+    TextView mTvbio;
+
+    @BindView(R.id.fab)
+    FloatingActionButton mFab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_profile);
         ButterKnife.bind(this);
-
-        getWindow().setEnterTransition(new AutoTransition());
-        getWindow().setExitTransition(new AutoTransition());
         Profile profile = getIntent().getParcelableExtra(ProfileActivity.class.getSimpleName());
 
         if (profile != null){
-            postponeEnterTransition();
-            getWindow().getSharedElementEnterTransition().addListener(new SharedElementTransitionListener(ENTER_TRANSITION, mContainer, mBioContainer));
-            getWindow().getSharedElementExitTransition().addListener(new SharedElementTransitionListener(EXIT_TRANSITION, mContainer, mBioContainer));
+//            postponeEnterTransition();
+            getWindow().getSharedElementEnterTransition().addListener(new SharedElementTransitionListener(ENTER_TRANSITION, mContainer, mFab));
+            getWindow().getSharedElementExitTransition().addListener(new SharedElementTransitionListener(EXIT_TRANSITION, mContainer, mFab));
             Log.d(TAG, "onCreate: " + profile.getAvatarUrl());
-            setupIcon(profile);
+//            setupIcon(profile);
         }
         Slide slide = new Slide();
-        slide.setSlideEdge(Gravity.START);
-        TransitionManager.beginDelayedTransition(mBioContainer, slide);
+        slide.setSlideEdge(Gravity.BOTTOM);
+        slide.addTarget(R.id.tv_bio);
+        slide.addTarget(R.id.fab);
+
+        getWindow().setEnterTransition(slide);
+
+
     }
 
     private void setupIcon(Profile profile) {
@@ -99,13 +113,13 @@ public class ProfileActivity extends AppCompatActivity  {
         float initialRadius = (float) Math.hypot(cx, cy);
 
         Animator anim =
-                ViewAnimationUtils.createCircularReveal(mContainer, cx, cy, initialRadius, 0);
+                ViewAnimationUtils.createCircularReveal(mContainer, cx, cy, initialRadius, - 10);
 
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                mContainer.setVisibility(View.INVISIBLE);
+                mContainer.setBackgroundColor(Color.TRANSPARENT);
                 supportFinishAfterTransition();
             }
         });
