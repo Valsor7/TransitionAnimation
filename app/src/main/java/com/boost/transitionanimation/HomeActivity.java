@@ -5,8 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import com.boost.transitionanimation.dummy.DummyContent;
-
 import butterknife.ButterKnife;
 
 public class HomeActivity extends AppCompatActivity implements FragmentCallback, FragmentCats.OnListFragmentInteractionListener{
@@ -40,7 +38,7 @@ public class HomeActivity extends AppCompatActivity implements FragmentCallback,
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction() {
 
     }
 }

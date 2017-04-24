@@ -1,12 +1,11 @@
 package com.boost.transitionanimation;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.support.design.widget.FloatingActionButton;
-import android.support.transition.Transition;
+import android.transition.Transition;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.ViewGroup;
 
 import static com.boost.transitionanimation.SharedElementTransitionListener.TransitionType.ENTER_TRANSITION;
 
@@ -15,7 +14,7 @@ import static com.boost.transitionanimation.SharedElementTransitionListener.Tran
  */
 
 public class SharedElementTransitionListener implements Transition.TransitionListener {
-
+    private static final String TAG = "SharedElementTransition";
     private TransitionType mTransitionType;
     private View mContainer;
     private FloatingActionButton mFab;
@@ -37,7 +36,9 @@ public class SharedElementTransitionListener implements Transition.TransitionLis
 
     @Override
     public void onTransitionEnd(Transition transition) {
+        Log.d(TAG, "onTransitionEnd: " + transition);
         if (mTransitionType == ENTER_TRANSITION){
+            Log.d(TAG, "onTransitionEnd: enter");
             mContainer.setVisibility(View.VISIBLE);
             int cx = mContainer.getWidth();
             int cy = mContainer.getHeight();

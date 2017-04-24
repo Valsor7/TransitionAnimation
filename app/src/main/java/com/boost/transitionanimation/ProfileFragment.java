@@ -5,17 +5,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.transition.Fade;
-import android.support.transition.TransitionSet;
 import android.support.v4.app.Fragment;
-import android.transition.ChangeBounds;
-import android.transition.ChangeImageTransform;
-import android.transition.ChangeTransform;
 import android.transition.Slide;
 import android.transition.TransitionInflater;
+import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -33,6 +28,8 @@ import com.bumptech.glide.request.target.Target;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.boost.transitionanimation.SharedElementTransitionListener.TransitionType.ENTER_TRANSITION;
 
 
 /**
@@ -81,8 +78,7 @@ public class ProfileFragment extends Fragment {
         slide.addTarget(R.id.fab);
 
         setEnterTransition(slide);
-        slide.setSlideEdge(Gravity.TOP);
-        setExitTransition(slide);
+
         setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
         setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
         mProfile = getArguments().getParcelable(Profile.class.getSimpleName());
@@ -103,15 +99,22 @@ public class ProfileFragment extends Fragment {
         if (mProfile != null) {
             Log.d(TAG, "onCreate: setTransitionName " + mProfile.getTransitionName());
             mIvAvatar.setTransitionName(mProfile.getTransitionName());
-//            postponeEnterTransition();
-//            Transition transitionEnter = (Transition) getSharedElementEnterTransition();
+            postponeEnterTransition();
 
-//            transitionEnter.addListener(new SharedElementTransitionListener(ENTER_TRANSITION, mContainer, mFab));
+
+
 //            transitionExit.addListener(new SharedElementTransitionListener(EXIT_TRANSITION, mContainer, mFab));
 
             Log.d(TAG, "onCreate: " + mProfile.getAvatarUrl());
-//            setupIcon(profile);
+            setupIcon(mProfile);
         }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        TransitionSet transitionEnter = (TransitionSet) getSharedElementEnterTransition();
+        transitionEnter.addListener(new SharedElementTransitionListener(ENTER_TRANSITION, mContainer, mFab));
     }
 
     private void setupIcon(Profile profile) {

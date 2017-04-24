@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.boost.transitionanimation.dummy.DummyContent.DummyItem;
 import com.boost.transitionanimation.model.ApiModule;
 import com.boost.transitionanimation.model.CatModel;
 
@@ -24,7 +23,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,7 +46,7 @@ public class FragmentCats extends Fragment {
     private FragmentCallback mFragmentCallback;
 
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction();
     }
 
     private OnClickProfileListener mViewHolderListener = new OnClickProfileListener() {
@@ -58,7 +56,6 @@ public class FragmentCats extends Fragment {
             Profile profile = mProfiles.get(position);
 
             ImageView ivAvatar = ButterKnife.findById(view, R.id.iv_avatar);
-            ivAvatar.setTransitionName(getString(R.string.shared_image_tag) + position);
 
             profile.setTransitionName(ivAvatar.getTransitionName());
             openProfileFragment(ivAvatar, profile);
@@ -112,12 +109,12 @@ public class FragmentCats extends Fragment {
     }
 
     private void openProfileFragment(ImageView ivAvatar, Profile profile) {
-        setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
+
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, ProfileFragment.newInstance(profile), ProfileFragment.TAG)
                 .addSharedElement(ivAvatar, ViewCompat.getTransitionName(ivAvatar))
-                .addToBackStack(null)
+                .addToBackStack(FragmentCats.TAG)
+                .replace(R.id.fragment_container, ProfileFragment.newInstance(profile), ProfileFragment.TAG)
                 .commit();
     }
 
@@ -132,12 +129,13 @@ public class FragmentCats extends Fragment {
 
     private void setupDummyData() {
         int cat = CATS_AMOUNT;
-
+        mProfiles.clear();
         while (cat != 0) {
             Profile profile = new Profile();
             profile.setFullName("My cat " + cat);
+
             mProfiles.add(profile);
-//            initCall(cat - 1);
+            initCall(cat - 1);
             cat--;
         }
     }

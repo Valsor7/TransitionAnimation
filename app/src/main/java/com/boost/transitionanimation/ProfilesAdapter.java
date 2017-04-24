@@ -60,6 +60,7 @@ class ProfilesAdapter extends RecyclerView.Adapter<ProfilesAdapter.ProfileViewHo
 
         void onBind(Profile profile) {
             mName.setText(profile.getFullName());
+            mAvatarImageView.setTransitionName(mView.getContext().getString(R.string.shared_image_tag) + getAdapterPosition());
 
             Glide.with(mView.getContext())
                     .load(profile.getAvatarUrl())
