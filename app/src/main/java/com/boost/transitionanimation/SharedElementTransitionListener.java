@@ -3,7 +3,7 @@ package com.boost.transitionanimation;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.support.design.widget.FloatingActionButton;
-import android.transition.Transition;
+import android.support.transition.Transition;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;

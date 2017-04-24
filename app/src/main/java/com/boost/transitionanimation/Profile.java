@@ -3,6 +3,7 @@ package com.boost.transitionanimation;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.transition.Slide;
 
 class Profile implements Parcelable{
 
@@ -10,6 +11,7 @@ class Profile implements Parcelable{
     private String coverUrl;
     private String avatarUrl;
     private String bio;
+    private String transitionName;
 
     public Profile() {
     }
@@ -86,5 +88,13 @@ class Profile implements Parcelable{
         dest.writeString(coverUrl);
         dest.writeString(avatarUrl);
         dest.writeString(bio);
+    }
+
+    public String getTransitionName() {
+        return transitionName;
+    }
+
+    public void setTransitionName(String transitionName) {
+        this.transitionName = transitionName;
     }
 }
