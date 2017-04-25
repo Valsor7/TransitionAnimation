@@ -54,7 +54,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (mChangeFragmentCallback != null){
-                    mChangeFragmentCallback.onChangeFragment(FragmentCats.TAG, null);
+                    mChangeFragmentCallback.onChangeFragment(FragmentCats.TAG, null, mFab);
                 }
             }
         });

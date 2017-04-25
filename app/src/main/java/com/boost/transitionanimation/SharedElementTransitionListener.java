@@ -37,18 +37,7 @@ public class SharedElementTransitionListener implements Transition.TransitionLis
     @Override
     public void onTransitionEnd(Transition transition) {
         Log.d(TAG, "onTransitionEnd: " + transition);
-        if (mTransitionType == ENTER_TRANSITION){
-            Log.d(TAG, "onTransitionEnd: enter");
-            mContainer.setVisibility(View.VISIBLE);
-            int cx = mContainer.getWidth();
-            int cy = mContainer.getHeight();
 
-            float finalRadius = (float) Math.hypot(cx, cy);
-
-            Animator anim =
-                    ViewAnimationUtils.createCircularReveal(mContainer, cx, cy, 0, finalRadius);
-            anim.start();
-        }
     }
 
     @Override

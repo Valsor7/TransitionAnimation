@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,8 @@ class ProfilesAdapter extends RecyclerView.Adapter<ProfilesAdapter.ProfileViewHo
                     .load(profile.getAvatarUrl())
                     .dontAnimate()
                     .placeholder(R.mipmap.ic_launcher_round)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false)
                     .into(mAvatarImageView);
         }
 

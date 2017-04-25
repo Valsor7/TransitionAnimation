@@ -3,12 +3,16 @@ package com.boost.transitionanimation;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.transition.Slide;
+import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.transition.TransitionSet;
 import android.util.Log;
@@ -22,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -37,7 +42,7 @@ import static com.boost.transitionanimation.SharedElementTransitionListener.Tran
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements OnBackPressedHelperListener {
     public static final String TAG = "ProfileFragment";
 
     @BindView(R.id.iv_avatar)
@@ -55,6 +60,7 @@ public class ProfileFragment extends Fragment {
     @BindView(R.id.fab)
     FloatingActionButton mFab;
     private Profile mProfile;
+    private TransitionSet transitionEnter;
 
 
     public ProfileFragment() {
@@ -70,8 +76,15 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        postponeEnterTransition();
+
         Slide slide = new Slide();
         slide.setSlideEdge(Gravity.BOTTOM);
         slide.addTarget(R.id.tv_bio);
@@ -81,8 +94,47 @@ public class ProfileFragment extends Fragment {
 
         setSharedElementEnterTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
         setSharedElementReturnTransition(TransitionInflater.from(getActivity()).inflateTransition(android.R.transition.move));
-        mProfile = getArguments().getParcelable(Profile.class.getSimpleName());
+        transitionEnter = (TransitionSet) getSharedElementEnterTransition();
+        transitionEnter.addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
 
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                Log.d(TAG, "onTransitionEnd: ");
+                Log.d(TAG, "onTransitionEnd: enter");
+                mContainer.setVisibility(View.VISIBLE);
+                int cx = mContainer.getWidth();
+                int cy = mContainer.getHeight();
+
+                float finalRadius = (float) Math.hypot(cx, cy);
+
+                Animator anim =
+                        ViewAnimationUtils.createCircularReveal(mContainer, cx, cy, 0, finalRadius);
+                anim.start();
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+
+            }
+        });
+
+
+        mProfile = getArguments().getParcelable(Profile.class.getSimpleName());
+        Log.d(TAG, "onCreate: ");
     }
 
     @Override
@@ -96,29 +148,18 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        Log.d(TAG, "onViewCreated: ");
         if (mProfile != null) {
             Log.d(TAG, "onCreate: setTransitionName " + mProfile.getTransitionName());
             mIvAvatar.setTransitionName(mProfile.getTransitionName());
-            postponeEnterTransition();
-
-
-
-//            transitionExit.addListener(new SharedElementTransitionListener(EXIT_TRANSITION, mContainer, mFab));
-
             Log.d(TAG, "onCreate: " + mProfile.getAvatarUrl());
             setupIcon(mProfile);
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        TransitionSet transitionEnter = (TransitionSet) getSharedElementEnterTransition();
-        transitionEnter.addListener(new SharedElementTransitionListener(ENTER_TRANSITION, mContainer, mFab));
-    }
-
     private void setupIcon(Profile profile) {
-        Glide.with(this).load(profile.getAvatarUrl()).listener(new RequestListener<String, GlideDrawable>() {
+        Glide.with(this).load(profile.getAvatarUrl()).dontAnimate().skipMemoryCache(false).diskCacheStrategy(DiskCacheStrategy.ALL).listener(new RequestListener<String, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                 return false;
@@ -126,7 +167,6 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                Log.d(TAG, "onResourceReady: ");
                 scheduleStartPostponedTransition();
                 return false;
             }
@@ -144,20 +184,22 @@ public class ProfileFragment extends Fragment {
         });
     }
 
-    public void onBackPressed() {
+    @Override
+    public void onBackpressed() {
         int cx = mContainer.getWidth();
         int cy = mContainer.getHeight();
 
         float initialRadius = (float) Math.hypot(cx, cy);
 
         Animator anim =
-                ViewAnimationUtils.createCircularReveal(mContainer, cx, cy, initialRadius, -10);
+                ViewAnimationUtils.createCircularReveal(mContainer, cx, cy, initialRadius, 0);
 
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
                 mContainer.setBackgroundColor(Color.TRANSPARENT);
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
         anim.start();
