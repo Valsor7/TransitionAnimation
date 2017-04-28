@@ -10,9 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.transition.Slide;
 import android.transition.TransitionInflater;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
 import com.boost.transitionanimation.model.ApiModule;
@@ -26,6 +28,8 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.view.Gravity.BOTTOM;
 
 /**
  * A fragment representing a list of Items.
@@ -87,7 +91,8 @@ public class FragmentCats extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setEnterTransition(new Slide());
+//        Slide slide = new Slide(BOTTOM);
+//        setEnterTransition(slide);
     }
 
     @Override
@@ -121,23 +126,31 @@ public class FragmentCats extends Fragment {
     private void initRecyclerView() {
         mProfilesAdapter = new ProfilesAdapter(mProfiles, mViewHolderListener);
 
-        mProfilesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mProfilesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity())
+        {
+            @Override
+            protected int getExtraLayoutSpace(RecyclerView.State state) {
+                return 300;
+            }
+        }
+        );
         mProfilesRecyclerView.setAdapter(mProfilesAdapter);
-
+        mProfilesRecyclerView.setItemAnimator(new ItemEnterAnimator());
         setupDummyData();
     }
 
     private void setupDummyData() {
-        int cat = CATS_AMOUNT;
+        int cat = 0;
         mProfiles.clear();
-        while (cat != 0) {
+        while (cat < CATS_AMOUNT - 5) {
             Profile profile = new Profile();
             profile.setFullName("My cat " + cat);
 
             mProfiles.add(profile);
-            initCall(cat - 1);
-            cat--;
+//            initCall(cat);
+            cat++;
         }
+        mProfilesAdapter.notifyItemRangeInserted(0, mProfiles.size() - 5);
     }
 
     private void initCall(final int cat) {
@@ -149,9 +162,7 @@ public class FragmentCats extends Fragment {
                 if (response.body() != null)
                     Log.d(TAG, "onResponse: " + response.body());
                 mProfiles.get(cat).setAvatarUrl(response.body().getFile());
-                if (cat == 1) {
-                    mProfilesAdapter.notifyDataSetChanged();
-                }
+
             }
 
             @Override
